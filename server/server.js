@@ -34,6 +34,7 @@ const expressSession = require('express-session');
 const RedisStore = require('connect-redis')(expressSession);
 const sharedSession = require('express-socket.io-session');
 const interactiveServer = require('./lib/interactiveServer');
+const { v4: uuidv4 } = require('uuid');
 
 /* eslint-disable no-console */
 console.log('- process.env.DEBUG:', process.env.DEBUG);
@@ -299,6 +300,15 @@ async function setupAuth()
 
 	app.use(passport.initialize());
 	app.use(passport.session());
+
+	function errorHandler (err, req, res, next) {
+		res.status(500);
+		const trackingId = uuidv4();
+		res.render('If you report this error, please also report this tracking ID which makes it possible to locate your session in the logs which are available to the system administrator: %s',trackingId);
+		logger.error('Express error handler dump tracking ID: %s error dump: %o', trackingId, err);
+	}
+
+	app.use(errorHandler);
 
 	// loginparams
 	app.get('/auth/login', (req, res, next) =>
