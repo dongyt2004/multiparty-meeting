@@ -729,7 +729,7 @@ export default class RoomClient
 
 			this._webTorrent.seed(
 				files,
-				{ announceList: [ [ 'wss://tracker.lab.vvc.niif.hu:443' ] ] },
+				{ announceList: [ [ 'wss://tracker.sloppyta.co:443/announce' ], ["ws://106.38.121.167:5066"] ] },
 				(newTorrent) =>
 				{
 					store.dispatch(requestActions.notify(
